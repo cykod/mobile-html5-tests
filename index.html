@@ -76,6 +76,18 @@
 			canvas.drawImage(baseSprite,this.x,this.y);
 			}, function() {
 			canvas.clearRect(0,0,600,600);
+		}
+		
+		);
+
+
+		var NoClearCanvasSprite = SpriteBuilder("Canvas Sprites",function() {
+			base = $("<canvas id='container' width='600' height='600'></canvas>").appendTo("#testWrapper");
+			canvas = $("#container")[0].getContext("2d");
+			}, function() {
+			}, function() {
+			canvas.drawImage(baseSprite,this.x,this.y);
+			}, function() {
 
 		}
 		
@@ -89,12 +101,17 @@
 		[HtmlSprite, 10],
 		[HtmlSprite, 20],
 		[HtmlSprite, 50],
-		[HtmlSprite, 500],
+		[HtmlSprite, 100],
 		[CanvasSprite,1],
 		[CanvasSprite,10],
 		[CanvasSprite,20],
 		[CanvasSprite,50],
-		[CanvasSprite,500]
+		[CanvasSprite,100],
+		[NoClearCanvasSprite,1],
+		[NoClearCanvasSprite,10],
+		[NoClearCanvasSprite,20],
+		[NoClearCanvasSprite,50],
+		[NoClearCanvasSprite,100]
 		];
 
 
