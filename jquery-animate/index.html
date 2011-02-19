@@ -12,39 +12,141 @@
 		}
 
 
-		#image {
+		.sprite {
 			position:absolute;
 		}
 
 
 	</style>
 	<script>
-		var x = 0;
-		var y = 0;
-		var frames = 0;
-		var startTime = (new Date()).getTime();
-		function move() {
-			$("#image").css({top: y, left: x});
-			x++;
-			y++;
-			frames++;
-			if(x < 600) { 
-				setTimeout(move,15);
-			} else {
-				var endTime = new Date().getTime();
-				var fps = frames / (endTime - startTime) * 1000;
-				alert("Frames per second:" + fps);
-				
+		var itmIdx = 0;
+
+		var Sprite = function(vel) {
+			this.x = Math.random() * 600;
+			this.y = 0;
+			this.velocity = vel;
+		}
+
+		Sprite.prototype.move = function() {
+			this.y += this.velocity * dt / 1000;
+		}
+
+
+		var SpriteBuilder = function(initialize,builder,render,step) {
+			return { 
+				create: function() {
+					var cls = new Sprite(velocity);
+					builder.call(cls);
+					cls.render = render;
+					return cls;
+				},
+
+				initialize: initialize,
+				step: step
 			}
 		}
-		$(function() {
-			move();
+
+		var HtmlSprite = SpriteBuilder(function() {
+			$("<div id='container'></div>").appendTo("#testWrapper");
+
+		}, function() {
+			this.id = itmIdx++;
+			this.elm = $("<div class='sprite' id='" + this.id + "'><img src='sprite.png'/></div>").appendTo("#container");
+		}, function() {
+			this.elm.css({left: this.x, top: this.y});
+		}		
+		);
+
+		var CanvasSprite = SpriteBuilder(function() {
+
+			}, function() {
+
+
+			}, function() {
+
 		});
+
+
+		var tests = [ 
+		[HtmlSprite, 1], 
+		[HtmlSprite, 10],
+		[HtmlSprite, 20],
+		[HtmlSprite, 50],
+		[CanvasSprite,1],
+		[CanvasSprite,10],
+		[CanvasSprite,20],
+		[CanvasSprite,50]
+		];
+
+
+		var fps = 40;
+		var seconds = 5;
+		var boardHeight = 600;
+
+
+		var velocity = boardHeight / (fps / seconds);
+		var frames = fps * seconds;
+		var dt = 1000 / fps;
+
+		var testStart = null;
+		var testEnd = null;
+		var testCls = null;
+		var testCallback = null;
+
+		var sprites = [];
+		var spriteCnt = 0;
+		var frame = 0;
+
+		function runStep() {
+			frame++;
+			if(testCls.step) testCls.step();
+			for(var i=0;i<spriteCnt;i++) {
+				sprites[i].move();
+				sprites[i].render();
+			}
+			
+			if(frame >= frames) {
+				testEnd = new Date().getTime();
+				alert('Actual FPS:' + (frames / ((testEnd - testStart) / 1000))); 
+				testCallback();
+			} else {
+				setTimeout(runStep,dt);
+			}
+
+		};
+
+
+		function runTest(idx,callback) {
+			$("#testWrapper").html("");
+			testCallback = callback;
+			testCls = tests[idx][0];
+		       	spriteCnt = tests[idx][1];
+			sprites = [];
+			frame = 0;
+
+			testCls.initialize();
+			for(var i=0;i < spriteCnt;i++) {
+				sprites.push(testCls.create(velocity));
+			}
+
+			testStart = new Date().getTime();
+			runStep();
+		};
+
+		function runTests(step) {
+			step = step || 0;
+			runTest(step,function() { runTests(step+1); });
+		}
+
+		$(function() {
+			runTests();
+		});
+
+
 	</script>
 </head>
 <body>
-	<section id='container'>
-		<div id='image'><img src='sprite.png' /></div>
+	<section id='testWrapper'>
 	</section>
 
 
