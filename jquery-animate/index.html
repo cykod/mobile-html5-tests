@@ -5,7 +5,7 @@
 	<script type="text/javascript" src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js'></script>
 	<title></title>
 	<style>
-		#container {
+		body {
 			width:600px;
 			height:600px;
 			background-color:#black;
@@ -19,8 +19,16 @@
 
 	</style>
 	<script>
+		var x = 0;
+		var y = 0;
+		function move() {
+			$("#image").css({top: y, left: x});
+			x++;
+			y++;
+			if(x < 600) setTimeout(move,15);
+		}
 		$(function() {
-			$("#image").animate({ top: 560, left:560 },4000);
+			move();
 		});
 	</script>
 </head>
