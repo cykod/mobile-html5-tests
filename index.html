@@ -8,7 +8,8 @@
 		body {
 			width:600px;
 			height:600px;
-			background-color:#black;
+			background-color:black;
+			color:white;
 		}
 
 
@@ -20,11 +21,17 @@
 	</style>
 	<script>
 		var itmIdx = 0;
+		var canvas=null;
+		var baseSprite = new Image();
+		baseSprite.src = 'sprite.png'
+
+		var results = "";
+
 
 		var Sprite = function(vel) {
 			this.x = Math.random() * 600;
 			this.y = 0;
-			this.velocity = vel;
+			this.velocity = vel + Math.random() * vel;
 		}
 
 		Sprite.prototype.move = function() {
@@ -32,21 +39,25 @@
 		}
 
 
-		var SpriteBuilder = function(initialize,builder,render,step) {
+		var SpriteBuilder = function(name,initialize,builder,render,step) {
 			return { 
 				create: function() {
 					var cls = new Sprite(velocity);
 					builder.call(cls);
 					cls.render = render;
+					cls.name = name;
 					return cls;
 				},
+				name: name,
 
 				initialize: initialize,
 				step: step
 			}
 		}
 
-		var HtmlSprite = SpriteBuilder(function() {
+		var NothingSprite = SpriteBuilder("Rendering Nothing",function () {}, function() { }, function() {});
+
+		var HtmlSprite = SpriteBuilder("JQuery CSS Sprites",function() {
 			$("<div id='container'></div>").appendTo("#testWrapper");
 
 		}, function() {
@@ -57,30 +68,38 @@
 		}		
 		);
 
-		var CanvasSprite = SpriteBuilder(function() {
-
+		var CanvasSprite = SpriteBuilder("Canvas Sprites",function() {
+			base = $("<canvas id='container' width='600' height='600'></canvas>").appendTo("#testWrapper");
+			canvas = $("#container")[0].getContext("2d");
 			}, function() {
-
-
 			}, function() {
+			canvas.drawImage(baseSprite,this.x,this.y);
+			}, function() {
+			canvas.clearRect(0,0,600,600);
 
-		});
+		}
+		
+		);
 
 
 		var tests = [ 
+		[NothingSprite, 1],
+		[NothingSprite, 50],
 		[HtmlSprite, 1], 
 		[HtmlSprite, 10],
 		[HtmlSprite, 20],
 		[HtmlSprite, 50],
+		[HtmlSprite, 500],
 		[CanvasSprite,1],
 		[CanvasSprite,10],
 		[CanvasSprite,20],
-		[CanvasSprite,50]
+		[CanvasSprite,50],
+		[CanvasSprite,500]
 		];
 
 
 		var fps = 40;
-		var seconds = 5;
+		var seconds = 3;
 		var boardHeight = 600;
 
 
@@ -107,7 +126,7 @@
 			
 			if(frame >= frames) {
 				testEnd = new Date().getTime();
-				alert('Actual FPS:' + (frames / ((testEnd - testStart) / 1000))); 
+				results +=  testCls.name + ' ' + spriteCnt + ' Actual FPS: ' + (frames / ((testEnd - testStart) / 1000)) + "<br/>";
 				testCallback();
 			} else {
 				setTimeout(runStep,dt);
@@ -135,7 +154,13 @@
 
 		function runTests(step) {
 			step = step || 0;
-			runTest(step,function() { runTests(step+1); });
+			runTest(step,function() { 
+				if(step < tests.length - 1) { 
+					runTests(step+1); 
+				} else { 
+					$("#testWrapper").html("");
+					$("<div>" + results + "</div>").appendTo("#testWrapper"); 
+			}});
 		}
 
 		$(function() {
