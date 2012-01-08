@@ -20,6 +20,18 @@
 
 	</style>
 	<script>
+		// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+		window.requestAnimFrame = (function(){
+			return  window.requestAnimationFrame       || 
+			window.webkitRequestAnimationFrame || 
+			window.mozRequestAnimationFrame    || 
+			window.oRequestAnimationFrame      || 
+			window.msRequestAnimationFrame     || 
+			function(/* function */ callback, /* DOMElement */ element){
+				window.setTimeout(callback, 1000 / 60);
+			};
+		})();
+
 		var itmIdx = 0;
 		var canvas=null;
 		var baseSprite = new Image();
@@ -140,13 +152,13 @@
 				sprites[i].move();
 				sprites[i].render();
 			}
-			
+
 			if(frame >= frames) {
 				testEnd = new Date().getTime();
 				results +=  testCls.name + ' ' + spriteCnt + ' Actual FPS: ' + (frames / ((testEnd - testStart) / 1000)) + "<br/>";
 				testCallback();
-			} else {
-				setTimeout(runStep,dt);
+				} else {
+				requestAnimFrame(runStep);
 			}
 
 		};
@@ -181,7 +193,7 @@
 		}
 
 		$(function() {
-			runTests();
+			runTests()
 		});
 
 
