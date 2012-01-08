@@ -72,12 +72,23 @@
 
 		var NothingSprite = SpriteBuilder("Rendering Nothing",function () {}, function() { }, function() {});
 
-		var HtmlSprite = SpriteBuilder("JQuery CSS Sprites",function() {
+		var HtmlSprite = SpriteBuilder("JQuery IMG Sprites",function() {
 			$("<div id='container'></div>").appendTo("#testWrapper");
 
 		}, function() {
 			this.id = itmIdx++;
 			this.elm = $("<div class='sprite' id='" + this.id + "'><img src='sprite.png'/></div>").appendTo("#container");
+		}, function() {
+			this.elm.css({left: this.x, top: this.y});
+		}		
+		);
+
+		var CSSSprite = SpriteBuilder("JQuery CSS Sprites",function() {
+			$("<div id='container'></div>").appendTo("#testWrapper");
+
+		}, function() {
+			this.id = itmIdx++;
+			this.elm = $("<div class='sprite' id='" + this.id + "' style='background:url(sprite.png) no-repeat top left; width:31px; height:30px;' ></div>").appendTo("#container");
 		}, function() {
 			this.elm.css({left: this.x, top: this.y});
 		}		
@@ -89,7 +100,7 @@
 
 		}, function() {
 			this.id = itmIdx++;
-			this.elm = $("<div class='sprite' id='" + this.id + "'><img src='sprite.png'/></div>").appendTo("#container").css("-webkit-transform","translate3d(0,0,0)");
+			this.elm = $("<div class='sprite' id='" + this.id + "' style='background:url(sprite.png) no-repeat top left; width:31px; height:30px;' ></div>").appendTo("#container").css("-webkit-transform","translate3d(0,0,0)");
 		}, function() {
 			this.elm.css("-webkit-transform","translate3d(" + this.x + "px," + this.y + "px,0)");
 		}		
@@ -128,6 +139,11 @@
 		[HtmlSprite, 20],
 		[HtmlSprite, 50],
 		[HtmlSprite, 100],
+		[CSSSprite, 1], 
+		[CSSSprite, 10],
+		[CSSSprite, 20],
+		[CSSSprite, 50],
+		[CSSSprite, 100],
 		[HtmlTransformSprite, 1], 
 		[HtmlTransformSprite, 10],
 		[HtmlTransformSprite, 20],
