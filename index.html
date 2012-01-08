@@ -89,9 +89,9 @@
 
 		}, function() {
 			this.id = itmIdx++;
-			this.elm = $("<div class='sprite' id='" + this.id + "'><img src='sprite.png'/></div>").appendTo("#container").css("-webkit-transform","translate(0px,0px)");
+			this.elm = $("<div class='sprite' id='" + this.id + "'><img src='sprite.png'/></div>").appendTo("#container").css("-webkit-transform","translate3d(0,0,0)");
 		}, function() {
-			this.elm.css({left: this.x, top: this.y});
+			this.elm.css("-webkit-transform","translate3d(" + this.x + "px," + this.y + "px,0)");
 		}		
 		);
 
