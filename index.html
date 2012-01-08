@@ -3,11 +3,14 @@
 <head>
 	<meta charset="UTF-8">
 	<script type="text/javascript" src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js'></script>
+	 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable:no">
+
+
 	<title></title>
 	<style>
 		body {
-			width:600px;
-			height:600px;
+			width:320px;
+			height:320px;
 			background-color:black;
 			color:white;
 		}
@@ -41,7 +44,7 @@
 
 
 		var Sprite = function(vel) {
-			this.x = Math.random() * 600;
+			this.x = Math.random() * 320;
 			this.y = 0;
 			this.velocity = vel + Math.random() * vel;
 		}
@@ -80,21 +83,34 @@
 		}		
 		);
 
+
+		var HtmlTransformSprite = SpriteBuilder("JQuery CSS Sprites w/ Transform",function() {
+			$("<div id='container'></div>").appendTo("#testWrapper");
+
+		}, function() {
+			this.id = itmIdx++;
+			this.elm = $("<div class='sprite' id='" + this.id + "'><img src='sprite.png'/></div>").appendTo("#container").css("-webkit-transform","translate(0px,0px)");
+		}, function() {
+			this.elm.css({left: this.x, top: this.y});
+		}		
+		);
+
+
 		var CanvasSprite = SpriteBuilder("Canvas Sprites",function() {
-			base = $("<canvas id='container' width='600' height='600'></canvas>").appendTo("#testWrapper");
+			base = $("<canvas id='container' width='320' height='320'></canvas>").appendTo("#testWrapper");
 			canvas = $("#container")[0].getContext("2d");
 			}, function() {
 			}, function() {
 			canvas.drawImage(baseSprite,this.x,this.y);
 			}, function() {
-			canvas.clearRect(0,0,600,600);
+			canvas.clearRect(0,0,320,320);
 		}
 		
 		);
 
 
 		var NoClearCanvasSprite = SpriteBuilder("Canvas Sprites no Clear",function() {
-			base = $("<canvas id='container' width='600' height='600'></canvas>").appendTo("#testWrapper");
+			base = $("<canvas id='container' width='320' height='320'></canvas>").appendTo("#testWrapper");
 			canvas = $("#container")[0].getContext("2d");
 			}, function() {
 			}, function() {
@@ -112,6 +128,11 @@
 		[HtmlSprite, 20],
 		[HtmlSprite, 50],
 		[HtmlSprite, 100],
+		[HtmlTransformSprite, 1], 
+		[HtmlTransformSprite, 10],
+		[HtmlTransformSprite, 20],
+		[HtmlTransformSprite, 50],
+		[HtmlTransformSprite, 100],
 		[CanvasSprite,1],
 		[CanvasSprite,10],
 		[CanvasSprite,20],
@@ -129,7 +150,7 @@
 
 		var fps = 40;
 		var seconds = 3;
-		var boardHeight = 600;
+		var boardHeight = 320;
 
 
 		var velocity = boardHeight / (fps / seconds);
