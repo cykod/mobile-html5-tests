@@ -72,6 +72,21 @@
 
 		var NothingSprite = SpriteBuilder("Rendering Nothing",function () {}, function() { }, function() {});
 
+		var ClearSprite = SpriteBuilder("Clear Canvas",function () {
+			base = $("<canvas id='container' width='320' height='320'></canvas>").appendTo("#testWrapper");
+			ctx = $("#container")[0].getContext("2d");
+			}, function() { }, function() {
+			ctx.clearRect(0,0,320,320);
+		});
+
+		var ClearWidthSprite = SpriteBuilder("Reset Canvas Width",function () {
+			base = $("<canvas id='container' width='320' height='320'></canvas>").appendTo("#testWrapper");
+			canvas = $("#container")[0];
+			}, function() { }, function() {
+			canvas.width = canvas.width;
+		});
+
+
 		var HtmlSprite = SpriteBuilder("JQuery IMG Sprites",function() {
 			$("<div id='container'></div>").appendTo("#testWrapper");
 
@@ -159,6 +174,8 @@
 		[NoClearCanvasSprite,20],
 		[NoClearCanvasSprite,50],
 		[NoClearCanvasSprite,100],
+		[ClearSprite, 1],
+		[ClearWidthSprite, 1],
 		[NothingSprite, 1],
 		[NothingSprite, 50]
 		];
