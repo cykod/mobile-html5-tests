@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<script type="text/javascript" src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js'></script>
-	 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable:no">
+	 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 
 	<title></title>
@@ -95,7 +95,7 @@
 		);
 
 
-		var HtmlTransformSprite = SpriteBuilder("JQuery CSS Sprites w/ Transform",function() {
+		var HtmlTransformSprite = SpriteBuilder("JQuery CSS w/ Transform",function() {
 			$("<div id='container'></div>").appendTo("#testWrapper");
 
 		}, function() {
@@ -184,6 +184,9 @@
 
 		function runStep() {
 			frame++;
+			if(frame < frames) {
+			  requestAnimFrame(runStep);
+			}
 			if(testCls.step) testCls.step();
 			for(var i=0;i<spriteCnt;i++) {
 				sprites[i].move();
@@ -191,11 +194,9 @@
 			}
 
 			if(frame >= frames) {
-				testEnd = new Date().getTime();
-				results +=  testCls.name + ' ' + spriteCnt + ' Actual FPS: ' + (frames / ((testEnd - testStart) / 1000)) + "<br/>";
-				testCallback();
-				} else {
-				requestAnimFrame(runStep);
+			  testEnd = new Date().getTime();
+			  results +=  testCls.name + ' ' + spriteCnt + ' Actual FPS: ' + Math.floor(frames / ((testEnd - testStart) / 1000)) + "<br/>";
+			  testCallback();
 			}
 
 		};
